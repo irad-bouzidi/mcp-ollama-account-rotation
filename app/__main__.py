@@ -41,13 +41,21 @@ def main() -> None:
                 async with sse.connect_sse(request.scope, request.receive, request._send) as streams:
                     await server.run(streams[0], streams[1], server.create_initialization_options())
 
+            from starlette.responses import JSONResponse
+
+            async def health(request):
+                return JSONResponse({"status": "ok"})
+
             app = Starlette(
                 routes=[
+                    Route("/health", endpoint=health),
                     Route("/sse", endpoint=handle_sse),
                     Mount("/messages", app=sse.handle_post_message),
                 ]
             )
-            uvicorn.run(app, host="0.0.0.0", port=args.port)
+            cfg = uvicorn.Config(app, host="0.0.0.0", port=args.port, loop="asyncio")
+            srv = uvicorn.Server(cfg)
+            await srv.serve()
         else:
             from mcp.server.stdio import stdio_server
 

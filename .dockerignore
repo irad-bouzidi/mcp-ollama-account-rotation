@@ -5,9 +5,6 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
-dist/
-build/
-*.egg
-
-# Account credentials (user-managed)
-data/accounts.json
+.git/
+.gitignore
+PLAN.md

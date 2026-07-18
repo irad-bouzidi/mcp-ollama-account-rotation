@@ -1,0 +1,8 @@
+services:
+  ollama-router:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    command: ["--transport", "sse", "--port", "8000"]

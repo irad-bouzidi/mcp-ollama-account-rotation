@@ -71,18 +71,12 @@ Add accounts to `data/accounts.json`:
 {
   "accounts": [
     {
-      "id": "personal",
       "email": "user1@example.com",
-      "api_key": "ollama-api-key-1",
-      "enabled": true,
-      "tags": ["prod"]
+      "api_key": "ollama-api-key-1"
     },
     {
-      "id": "work",
       "email": "user2@example.com",
-      "api_key": "ollama-api-key-2",
-      "enabled": true,
-      "tags": ["prod"]
+      "api_key": "ollama-api-key-2"
     }
   ]
 }
