@@ -1,5 +1,6 @@
 services:
-  ollama-router:
+  mcp-ollama-account-rotation:
+    container_name: mcp-ollama-account-rotation
     build: .
     ports:
       - "8000:8000"

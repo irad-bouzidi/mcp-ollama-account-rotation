@@ -1,6 +1,6 @@
 import re
 
-from pydantic import BaseModel, SecretStr, field_validator
+from pydantic import BaseModel, SecretStr, model_validator
 
 
 def _email_to_id(email: str) -> str:
@@ -14,15 +14,11 @@ class Account(BaseModel):
     enabled: bool = True
     tags: list[str] = []
 
-    @field_validator("id", mode="before")
-    @classmethod
-    def _default_id(cls, v: str | None, info) -> str:
-        if v:
-            return v
-        email = info.data.get("email")
-        if email:
-            return _email_to_id(str(email))
-        return "unknown"
+    @model_validator(mode="after")
+    def _default_id(self) -> "Account":
+        if self.id is None and self.email:
+            self.id = _email_to_id(self.email)
+        return self
 
 
 class AccountsFile(BaseModel):
