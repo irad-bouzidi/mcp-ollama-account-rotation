@@ -1,0 +1,26 @@
+ollama_base_url: "https://api.ollama.com"
+accounts_file: "data/accounts.json"
+state_file: "data/state.json"
+
+retry:
+  max_attempts: 3
+  backoff_base: 2.0
+  backoff_max: 60.0
+  jitter: 0.1
+
+rotation:
+  strategy: "round_robin"
+
+health:
+  interval_seconds: 60
+  timeout_seconds: 10
+  test_prompt: "hello"
+
+timeouts:
+  request_seconds: 60
+  connect_seconds: 10
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "console"

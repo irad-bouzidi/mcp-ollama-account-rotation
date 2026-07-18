@@ -1,0 +1,8 @@
+mcp==1.6.0
+httpx==0.28.1
+pydantic==2.10.6
+pyyaml==6.0.2
+tenacity==9.0.0
+structlog==24.4.0
+watchfiles==1.0.5
+anyio==4.8.0

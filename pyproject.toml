@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-ollama-account-rotation"
+version = "0.1.0"
+description = "MCP server that transparently routes Ollama Cloud API requests across multiple user-owned accounts"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.28.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "tenacity>=9.0.0",
+    "structlog>=24.0.0",
+    "watchfiles>=1.0.0",
+    "anyio>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
+    "respx>=0.22",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "pyyaml-include>=2.0",
+]
+
+[project.scripts]
+ollama-router = "app.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["N818"]
