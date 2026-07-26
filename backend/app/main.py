@@ -11,7 +11,7 @@ from app.seed import seed_providers
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
-    run_migrations(settings.database_url)
+    await run_migrations(settings.database_url)
     await seed_providers()
     yield
 
