@@ -1,3 +1,6 @@
+volumes:
+  postgres_data:
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,7 +10,7 @@ services:
       POSTGRES_USER: rotation_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - /home/irad/data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U rotation_user -d account_rotation"]
       interval: 5s
