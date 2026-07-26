@@ -3,16 +3,17 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import engine
+from app.alembic import run_migrations
+from app.config import get_settings
+from app.seed import seed_providers
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        from app.database import Base
-        await conn.run_sync(Base.metadata.create_all)
+    settings = get_settings()
+    await run_migrations(settings.database_url)
+    await seed_providers()
     yield
-    await engine.dispose()
 
 
 app = FastAPI(title="Account Rotation API", lifespan=lifespan)
