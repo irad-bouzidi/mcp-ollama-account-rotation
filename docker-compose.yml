@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: account_rotation_postgres
+    environment:
+      POSTGRES_DB: account_rotation
+      POSTGRES_USER: rotation_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /home/irad/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rotation_user -d account_rotation"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    container_name: account_rotation_backend
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://rotation_user:${DB_PASSWORD}@postgres/account_rotation
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    restart: unless-stopped
+
+  frontend:
+    container_name: account_rotation_frontend
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
