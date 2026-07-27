@@ -4,6 +4,8 @@ from uuid import UUID
 from httpx import ConnectError
 from pydantic import BaseModel
 
+from app.models.account import Account
+
 
 class ChatResult(BaseModel):
     content: str
@@ -49,8 +51,8 @@ def classify_connection_error(exc: ConnectError) -> ProviderError:
 class BaseProviderAdapter(ABC):
     @abstractmethod
     async def chat_completion(
-        self, account: object, model: str, messages: list, **kwargs
+        self, account: Account, model: str, messages: list, **kwargs
     ) -> ChatResult: ...
 
     @abstractmethod
-    async def check_credits(self, account: object) -> float | None: ...
+    async def check_credits(self, account: Account) -> float | None: ...
