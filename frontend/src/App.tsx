@@ -1,5 +1,13 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 function App() {
-  return <div>Account Rotation Manager</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div>Account Rotation Manager</div>} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
