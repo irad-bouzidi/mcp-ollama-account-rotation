@@ -8,7 +8,7 @@ from app.models.account import Account
 from app.models.provider import Provider
 from app.models.usage_log import UsageLog
 from app.services.adapters.base import ChatResult, ProviderError
-from app.services.adapters import get_adapter
+from app.services.adapters import ADAPTER_REGISTRY, get_adapter
 
 
 class AllAccountsExhausted(Exception):
@@ -100,7 +100,7 @@ class RotationService:
         await self.db.execute(
             update(Account)
             .where(Account.id == account_id)
-            .values(is_depleted=False, last_error=None)
+            .values(is_depleted=False, last_error=None, rate_limit_reset=None)
         )
         await self.db.commit()
         result = await self.db.execute(
@@ -174,7 +174,8 @@ class RotationService:
         await self.db.commit()
 
     async def _get_available_providers(self) -> list[str]:
+        registry_names = list(ADAPTER_REGISTRY.keys())
         result = await self.db.execute(
-            select(Provider.name).where(Provider.name.in_(["openrouter", "nvidia-nim", "ollama"]))
+            select(Provider.name).where(Provider.name.in_(registry_names))
         )
         return [row[0] for row in result.all()]
