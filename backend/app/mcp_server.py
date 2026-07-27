@@ -1,24 +1,16 @@
-from contextlib import asynccontextmanager
 from uuid import UUID
 
 from fastmcp import FastMCP
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.database import async_session, engine
+from app.database import async_session
 from app.models.account import Account
 from app.models.provider import Provider
 from app.services.rotation import AllAccountsExhausted, NoAvailableAccounts, RotationService
 
 
-@asynccontextmanager
-async def mcp_lifespan(server: FastMCP):
-    async with engine.connect() as conn:
-        await conn.run_sync(lambda _: None)
-    yield
-
-
-mcp = FastMCP("account-rotation", lifespan=mcp_lifespan)
+mcp = FastMCP("account-rotation")
 
 
 async def _get_service():
@@ -228,8 +220,13 @@ async def remove_account(account_id: str) -> dict:
     """
     session = async_session()
     try:
+        try:
+            parsed = UUID(account_id)
+        except ValueError:
+            return {"error": f"Invalid account_id: '{account_id}' is not a valid UUID"}
+
         result = await session.execute(
-            select(Account).where(Account.id == UUID(account_id))
+            select(Account).where(Account.id == parsed)
         )
         account = result.scalar_one_or_none()
         if account is None:
