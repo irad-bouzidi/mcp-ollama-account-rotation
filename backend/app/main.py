@@ -9,6 +9,7 @@ from sqlalchemy.orm import selectinload
 from app.alembic import run_migrations
 from app.config import get_settings
 from app.database import get_db
+from app.mcp_server import mcp
 from app.models.provider import Provider
 from app.routers import accounts, providers, usage
 from app.schemas.account import AccountRead
@@ -37,6 +38,9 @@ app.add_middleware(
 app.include_router(providers.router)
 app.include_router(accounts.router)
 app.include_router(usage.router)
+
+# Mount FastMCP Streamable HTTP transport
+app.mount("/mcp", mcp.streamable_http_app())
 
 
 @app.get("/")
